@@ -1,6 +1,5 @@
-$(function() {
-	// Hook the textinput whenever it changes
-	$("#TextInput").on('change keyup paste', function() {
+$(function() {															// TODO: Is this commenting method good? Or should I change it?
+	$("#TextInput").on('change keyup paste', function() {				// Hook the textinput whenever it changes
 		var canvas = document.getElementById("Screen"); 				// Get the canvas #inconsistant semicolons
 		if (canvas.getContext) { 										// Valid context (Browser can use canvas)
 			var ctx = canvas.getContext("2d")							// Get the context
