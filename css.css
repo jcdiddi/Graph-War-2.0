@@ -1,13 +1,14 @@
 #LOGO {
 	border: 2px solid black;
 	width: 60%;
-	height: 15%;
 	margin: auto;
 	text-align: center;
 	background: rgba(50, 50, 50, 1);
 	color: white;
 	font-size: 500%;
 	border-radius: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .navbar {
