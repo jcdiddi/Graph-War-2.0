@@ -1,1 +1,40 @@
+#LOGO {
+	border: 2px solid black;
+	width: 60%;
+	height: 15%;
+	margin: auto;
+	text-align: center;
+	background: rgba(50, 50, 50, 1);
+	color: white;
+	font-size: 500%;
+	border-radius: 20px;
+}
 
+.navbar {
+	width: 98%;
+	background: #dddddd;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	padding: 4px;
+	text-align: center;
+	margin: auto;	
+}
+
+.navbar span {
+	background: #66ff66;
+	border: 2px solid black;
+	display: inline-block;
+	border-radius: 5px;
+	font-size: 200%;
+	cursor: pointer;
+	font-family: arial;
+	margin: .2%;
+}
+
+#homeMain span {
+	width: 30%;
+}
+
+body {
+	background: #aaaaaa;
+}
