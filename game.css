@@ -1,0 +1,13 @@
+div {
+    color: green;
+    font-size: 50px;
+}
+li {
+    color: blue;
+    list-style: circle;
+    outline-style: inset;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
