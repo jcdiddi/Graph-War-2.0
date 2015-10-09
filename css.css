@@ -1,5 +1,4 @@
 #LOGO {
-	border: 2px solid black;
 	width: 60%;
 	margin: auto;
 	text-align: center;
@@ -10,6 +9,7 @@
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-top: 1.5%;
+	box-shadow: 0 3px 0 0 #808080;
 }
 
 .navbar {
@@ -40,7 +40,7 @@
 .navbar span:hover {
 	background: #0080FF;
 	color: #F0F0F0;
-	-webkit-transform: scaleY(1.1) scaleX(1.1);
+	-webkit-transform: scaleY(1.05) scaleX(1.05);
 }
 
 #homeMain span {
