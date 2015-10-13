@@ -94,7 +94,9 @@ body {
 	margin-top: 10px;
 	font-family: arial;
 	color: #F0F0F0;
+	cursor: default;
 }
 #footer a{
-	color: #F0F0F0;
+	color: #FF8000;
+	text-decoration: none;
 }
