@@ -10,6 +10,7 @@
 	padding-bottom: 5px;
 	margin-top: 1.5%;
 	box-shadow: 0 3px 0 0 #808080;
+	cursor: pointer;
 }
 
 .navbar {
@@ -39,6 +40,9 @@
 	-ms-user-select: none;
 	user-select: none;
 }
+a span{
+	color: black;
+}
 .navbar span:hover {
 	background: #0080FF;
 	color: #F0F0F0;
@@ -60,9 +64,13 @@ body {
 	box-shadow: 0 3px 0 0 #808080;
 	margin: auto;
 	padding: 4px;
-	
+	font-family: arial;
 } 
-
+#content h1{
+	text-size: 50px;
+	text-decoration: underline;
+	margin: 10px;
+}
 
 ::-webkit-scrollbar {
 	width: 15px;
