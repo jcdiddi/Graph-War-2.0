@@ -15,6 +15,7 @@ $("#textinput").on('change keyup paste', function() {
                 obj.x = x
              	ctx.lineTo(x, canvas.height - code.eval(obj))   
             }
+            ctx.strokeStyle = "gray"
     	    ctx.stroke()
             ctx.closePath()
             $("#error").text("  ")
@@ -24,4 +25,31 @@ $("#textinput").on('change keyup paste', function() {
         }
     }
 })
+    $("#textinput").keypress(function () {
+        if($(this).keyCode == 13) {
+            SlowGraph(math.compile($("#textinput").val()), $("#screen")[0].getContext("2d"), $("#screen")[0].width)
+        }
+    })
 })
+function SlowGraph(code, ctx, width, x) {
+    if(typeof x === 'undefined') x = 0;
+    if(x != 0) {
+        var obj = new Object()
+        obj.x = x - 1
+        ctx.moveTo(x - 1, code.eval(obj))
+        obj.x++
+        ctx.lineTo(x, code.eval(obj))
+        ctx.stroke()
+        ctx.closePath()
+    } else {
+        ctx.moveTo(0, code.eval({x:0}))
+        ctx.lineTo(1, code.eval({x:1}))
+        ctx.stroke()
+        ctx.closePath()
+    }
+    if(x <= width) {
+        setTimeout(function() {
+            SlowGraph(code, ctx, width, x)
+        }, 16)
+    }
+}
