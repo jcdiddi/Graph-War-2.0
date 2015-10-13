@@ -20,11 +20,13 @@ $(function() {
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
                 ctx.moveTo(0, canvas.height - code.eval(obj))
-    	        for(var x = 0; x <= canvas.width; x++) {
+    	        for(var x = 1; x < canvas.width; x++) {
                     obj.x = x
-             	    ctx.lineTo(x, canvas.height - code.eval(obj))   
+             	    ctx.lineTo(x, canvas.height - code.eval(obj))
+             	    if(code.eval(obj) >= canvas.height) {
+                        break
+                    }
                 }
-                ctx.closePath()
                 ctx.stroke()
                 $("#error").text("  ")
             } catch (error) {
@@ -45,22 +47,21 @@ function SlowGraph(code, ctx, width, height, x) {
         ctx.moveTo(x - 1, height - code.eval(obj))
         obj.x++
         ctx.lineTo(x, height - code.eval(obj))
-        ctx.closePath()
         ctx.stroke()
     } else {
         ctx.beginPath()
         ctx.strokeStyle = "black"
         ctx.moveTo(0, height - code.eval({x:0}))
         ctx.lineTo(1, height - code.eval({x:1}))
-        ctx.closePath()
         ctx.stroke()
     }
-    if(x <= width) {
+    var t = new Object()
+    t.x = x
+    if(x <= width && code.eval(t) <= height) {
         setTimeout(function() {
             SlowGraph(code, ctx, width, height, x+1)
         }, 3)
     } else {
-        console.log("Finished!")
         DrawingFunction = false
     }
 }
