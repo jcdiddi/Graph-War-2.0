@@ -1,13 +1,66 @@
-div {
-    color: green;
+body {
+    background-color: #FF8000;
+    background-image: url();
+}
+.title {
+    color: #0080FF;
     font-size: 50px;
+    font-family: verdana, sans-serif;
+    margin-bottom: 5px;
+    margin-top: 20px;
+    text-align: center;
+}
+h2 {
+    margin-top: 0px;
+    text-align: center;
+}
+h3 {
+    
+}
+td {
+    padding-left: 20px;
+    padding-right: 50px;
+}
+.graph {
+    float: left;
+}
+.chat {
+    float: left;
+}
+.chat_box {
+    background-color: white;
+    width: 200px;
+    height: 521px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border: 2px solid black;
+    border-bottom-color: black;
+}
+.chat_heading {
+    color: black;
+    /*whole element must = 144px, or hieght of title + heading next to it*/
+    padding-top: 109px;
+    padding-bottom: 5px;
 }
 li {
-    color: blue;
-    list-style: circle;
-    outline-style: inset;
-    padding-left: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-top: 20px;
+    float: left;
+    list-style-type: none;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-family: verdana;
+    font-size: 15px;
+    margin-bottom: 40px;
+}
+.quit { /*need to fix weird spacing issues*/
+    float: none;
+    padding-left: 20px;
+}
+.y {
+    font-size: 40px;
+    padding-right: 11px;
+}
+.equation-box {
+    background-color: white;
+    border: 1px solid black;
+    width: 300px;
 }
