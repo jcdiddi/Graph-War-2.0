@@ -1,6 +1,7 @@
 body {
     background-color: #FF8000;
     background-image: url();
+    margin-top: 0px;
 }
 .title {
     color: #0080FF;
@@ -13,9 +14,8 @@ body {
 h2 {
     margin-top: 0px;
     text-align: center;
-}
-h3 {
-    
+    font-family: verdana;
+    font-size: 22px;
 }
 td {
     padding-left: 20px;
@@ -38,29 +38,42 @@ td {
 }
 .chat_heading {
     color: black;
-    /*whole element must = 144px, or hieght of title + heading next to it*/
     padding-top: 109px;
     padding-bottom: 5px;
 }
-li {
-    float: left;
-    list-style-type: none;
-    padding-right: 20px;
-    padding-left: 20px;
+.menu tr td {
+    text-align: left;
     font-family: verdana;
-    font-size: 15px;
-    margin-bottom: 40px;
-}
-.quit { /*need to fix weird spacing issues*/
-    float: none;
-    padding-left: 20px;
+    font-size: 18px;
+    width: 70px;
+    background-color: orange;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 .y {
     font-size: 40px;
-    padding-right: 11px;
+    font-family:verdana;
+    padding-right: 0px;
+    margin-bottom: 50px;
 }
-.equation-box {
-    background-color: white;
-    border: 1px solid black;
-    width: 300px;
+.equation-box{
+    padding-right: 0px;
+}
+input[type=text] {
+    width: 340px;
+    height: 40px;
+    font-size: 20px;
+    font-family: verdana;
+    padding-left: 10px;
+}
+#equation-box {
+    margin-left: 0px;
+}
+#chat-input {
+    font-size: 15px;
+    margin-top: 10px;
+    text-wrap: normal;
+}
+label {
+    font-family: verdana;
 }

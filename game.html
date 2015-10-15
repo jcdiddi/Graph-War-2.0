@@ -5,7 +5,7 @@
     </head>
     <body>
         <div>
-            <table>
+            <table class="menu">
                 <tr>
                     <td> Functions</td>
                     <td>Settings</td>
@@ -34,9 +34,12 @@
             <table>
                 <tr>
                     <td class="y">y =</td>
-                    <td class="equation-box"><input id="equation" type="text" name="equation"/></td>
+                    <td class="equation-box">
+                        <input id="equation" type="text" name="equation"/>
+                    </td>
                     <td class="preview">
                         <input id="preview-box" type="checkbox" name=""/>
+                        <label for=preview-box>Preview</label>
                     </td>
                     <td class="timer">timer</td>
                 </tr>
@@ -49,6 +52,9 @@
                 </tr>
                 <tr>
                     <td class="chat_box"></td>
+                </tr>
+                <tr>
+                    <input id="chat-input" type="text" name="chat-input"/>
                 </tr>
             </table>
         </div>
