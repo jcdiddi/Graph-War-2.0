@@ -20,6 +20,7 @@ h2 {
 td {
     padding-left: 20px;
     padding-right: 50px;
+    cursor: pointer;
 }
 .graph {
     float: left;
@@ -85,4 +86,8 @@ label {
     padding-left: 0px;
     font-size: 25px;
     font-family: verdana;
+}
+#settings-button {
+    Width: 100%;
+    Height: ;
 }
