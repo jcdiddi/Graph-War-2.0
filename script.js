@@ -1,15 +1,50 @@
 /*global math*/
 var DrawingFunction = false;
+var ObstacleArguments = new Object() // OOP FTW
+function Setup() {
+    $("#graph-holder").children().css({
+        "position": "absolute",
+        "left": "0",
+        "top": "0",
+        "width": "720",
+        "height": "480"
+    })
+    GenerateObstacles("#obstacle-graph", 5, 50, 10)
+}
+function GenerateObstacles(canvas, minradius, maxradius, amount) {
+    // This can probably be improved using some javascript magic, but I'm lazy.
+    if(typeof canvas == 'undefined') {
+        canvas = ObstacleArguments.canvas
+        minradius = ObstacleArguments.minradius
+        maxradius = ObstacleArguments.maxradius
+        amount = ObstacleArguments.amount
+    } else {
+        ObstacleArguments.canvas = canvas
+        ObstacleArguments.minradius = minradius
+        ObstacleArguments.maxradius = maxradius
+        ObstacleArguments.amount = amount
+    }
+    var width = $(canvas).width()
+    var height = $(canvas).height()
+    var ctx = $(canvas)[0].getContext("2d")
+    ctx.clearRect(0, 0, width, height)
+    for(var i = 0; i < amount; i++) {
+        ctx.beginPath()
+        ctx.arc(Math.random() * width, Math.random() * height, Math.floor((Math.random() * (maxradius - minradius)) + minradius), 0, Math.PI * 2, false)
+        ctx.fill()
+    }
+}
 $(function() {
+    Setup()
     $("#textinput").keypress(function (e) {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
             DrawingFunction = true
-            SlowGraph(math.compile($("#textinput").val()), $("#screen")[0].getContext("2d"), $("#screen")[0].width, $("#screen")[0].height)
+            AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), $("#obstacle-graph")[0].getContext("2d").getImageData(0, 0, $("#obstacle-graph").width(), $("#obstacle-graph").height()))
         }
     })
     $("#textinput").on('change keyup paste', function(e) {
-        var canvas = $("#screen")[0]
+        var canvas = $("#preview-graph")[0]
         if(canvas.getContext && !DrawingFunction) {
    	    	var ctx = canvas.getContext("2d")
             ctx.clearRect(0, 0, canvas.width, canvas.height) // Under normal conditions this is how the graph will be cleared
@@ -36,17 +71,62 @@ $(function() {
         }
     })
 })
-function SlowGraph(code, ctx, width, height, x) {
+// Returns false or true if there is a collision on the line in the collisiondata context
+// collisiondata being an imagedata created by createImageData()
+function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
+    var dx = x2 - x1
+    var dy = y2 - y1
+    var e = 0
+    var de = Math.abs(dy / dx)
+    var y = y1
+    var yd
+    if (y2 - y1 > 0) {
+        yd = 1
+    } else {
+        yd = -1
+    }
+    for(var x = x1; x <= x2; x++) {
+        if(CheckCollision(collisiondata, x, y)) {
+            return true
+        }
+        e += de
+        while(e >= 0.5) {
+            if(CheckCollision(collisiondata, x, y)) {
+                return true
+            }
+            y += yd
+            e--
+        }
+    }
+    return false
+}
+function CheckCollision(collisiondata, x, y) {
+    var res = collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128
+    if (res) {
+        
+    }
+    return 
+}
+function AttemptGraph(code, ctx, collisiondata, x) {
     if(typeof x === 'undefined') x = 0;
     $("#textinput").html("")
+    var width = ctx.canvas.clientWidth
+    var height = ctx.canvas.clientHeight
     if(x > 0) {
         ctx.beginPath()
         ctx.strokeStyle = "black"
         var obj = new Object()
         obj.x = x - 1
-        ctx.moveTo(x - 1, height - code.eval(obj))
+        var y1 = height - code.eval(obj)
         obj.x++
-        ctx.lineTo(x, height - code.eval(obj))
+        var y2 = height - code.eval(obj)
+        if(CheckLineCollision(collisiondata, x-1, height - y1, x, height - y2)) {
+            DrawingFunction = false;
+            console.log("Collision at: " + x.toString() + " " + y2.toString())
+            return;
+        }
+        ctx.moveTo(x - 1, y1)
+        ctx.lineTo(x, y2)
         ctx.stroke()
     } else {
         ctx.beginPath()
@@ -59,7 +139,7 @@ function SlowGraph(code, ctx, width, height, x) {
     t.x = x
     if(x <= width && code.eval(t) <= height) {
         setTimeout(function() {
-            SlowGraph(code, ctx, width, height, x+1)
+            AttemptGraph(code, ctx, collisiondata, x+1)
         }, 3)
     } else {
         DrawingFunction = false
