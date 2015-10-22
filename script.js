@@ -101,11 +101,7 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
     return false
 }
 function CheckCollision(collisiondata, x, y) {
-    var res = collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128
-    if (res) {
-        
-    }
-    return 
+    return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
 function AttemptGraph(code, ctx, collisiondata, x) {
     if(typeof x === 'undefined') x = 0;
@@ -120,7 +116,7 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         var y1 = height - code.eval(obj)
         obj.x++
         var y2 = height - code.eval(obj)
-        if(CheckLineCollision(collisiondata, x-1, height - y1, x, height - y2)) {
+        if(CheckLineCollision(collisiondata, x-1, y1, x, y2)) {
             DrawingFunction = false;
             console.log("Collision at: " + x.toString() + " " + y2.toString())
             return;
