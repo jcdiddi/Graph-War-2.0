@@ -1,6 +1,22 @@
 /*global math*/
 var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
+
+// We might want to put some of this stuff into an encapsulating object so it's not all in global
+// But that's not my business (Drinks apple juice as a muppet)
+var Entities = []
+var Teams = {
+    Orange: 0,
+    Blue: 1
+}
+function Entity(x, y, team) {
+    this.x = x
+    this.y = y
+    this.team = team
+    this.dead = false
+}
+Entity.prototype.Radius = 50
+
 function Setup() {
     $("#graph-holder").children().css({
         "position": "absolute",
