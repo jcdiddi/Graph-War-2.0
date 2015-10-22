@@ -16,9 +16,18 @@ function Entity(x, y, team) {
     this.dead = false
 }
 Entity.prototype.Radius = 50
-
 function DistanceToPoints(x1, y1, x2, y2) {
     return math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
+}
+// Returns the index that was collided with, or -1 if there were none
+function CheckEntityCollision(x, y) {
+    for(var i = 0; i < Entities.length; i++) {
+        var ent = Entities[i]
+        if(DistanceToPoints(x, y, ent.x, ent.y) < ent.Radius) {
+            return i
+        }
+    }
+    return -1
 }
 
 function Setup() {
