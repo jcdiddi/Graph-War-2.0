@@ -49,6 +49,8 @@ $(function() {
    	    	var ctx = canvas.getContext("2d")
             ctx.clearRect(0, 0, canvas.width, canvas.height) // Under normal conditions this is how the graph will be cleared
             try {
+				var pointListDiv = document.getElementById("values");//set up a div to push values out to for debugging
+            	var pointList = "" // string containing values that will be pushed to the div
                 var code = math.compile($("#textinput").val())
                 var obj = new Object()
                 obj.x = 0
