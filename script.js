@@ -49,6 +49,8 @@ $(function() {
    	    	var ctx = canvas.getContext("2d")
             ctx.clearRect(0, 0, canvas.width, canvas.height) // Under normal conditions this is how the graph will be cleared
             try {
+				var pointListDiv = document.getElementById("values");//set up a div to push values out to for debugging
+            	var pointList = "" // string containing values that will be pushed to the div
                 var code = math.compile($("#textinput").val())
                 var obj = new Object()
                 obj.x = 0
@@ -116,7 +118,7 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         var y1 = height - code.eval(obj)
         obj.x++
         var y2 = height - code.eval(obj)
-        if(CheckLineCollision(collisiondata, x-1, y1, x, y2)) {
+        if(CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))) {
             DrawingFunction = false;
             console.log("Collision at: " + x.toString() + " " + y2.toString())
             return;
