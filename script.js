@@ -29,6 +29,48 @@ function CheckEntityCollision(x, y) {
     }
     return -1
 }
+// Same as the collision lower, built for entities.
+// Implementation of Bresenham's Line Algorithm
+// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+function CheckEntityLineCollision(x1, y1, x2, y2) {
+    var dx = x2 - x1
+    var dy = y2 - y1
+    var e = 0
+    var de = Math.abs(dy / dx)
+    var y = y1
+    var yd
+    if (y2 - y1 > 0) {
+        yd = 1
+    } else {
+        yd = -1
+    }
+    for(var x = x1; x <= x2; x++) {
+        var ent = CheckEntityCollision(x, y)
+        if(ent >= 0) {
+            return ent
+        }
+        e += de
+        while(e >= 0.5) {
+            ent = CheckEntityCollision(x, y)
+            if(ent >= 0) {
+                return ent
+            }
+            y += yd
+            e--
+        }
+    }
+    return -1
+}
+function DrawEntities() {
+    ctx = $("#player-graph")[0].getContext("2d")
+    for(var i = 0; i < Entities.length; i++) {
+        var ent = Entities[i]
+        ctx.beginPath()
+        ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
+        ctx.FillStyle = ent.team == 0 ? "orange" : "blue"
+        ctx.fill()
+    }
+}
 
 function Setup() {
     $("#graph-holder").children().css({
@@ -151,6 +193,13 @@ function AttemptGraph(code, ctx, collisiondata, x) {
             DrawingFunction = false;
             console.log("Collision at: " + x.toString() + " " + y2.toString())
             return;
+        }
+        var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
+        if (ent >= 0) {
+            DrawingFunction = false
+            var entity = Entities[ent]
+            console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
+            entity.dead = true
         }
         ctx.moveTo(x - 1, y1)
         ctx.lineTo(x, y2)
