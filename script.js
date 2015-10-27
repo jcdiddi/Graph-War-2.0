@@ -40,7 +40,8 @@ $(function() {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
             DrawingFunction = true
-            AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), $("#obstacle-graph")[0].getContext("2d").getImageData(0, 0, $("#obstacle-graph").width(), $("#obstacle-graph").height()))
+            var canvas = $("#obstacle-graph")[0]
+            AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width(), canvas.height()))
         }
     })
     $("#textinput").on('change keyup paste', function(e) {
