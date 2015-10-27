@@ -105,6 +105,9 @@ body {
 
 #aboutMessageBG {
     background: rgba(240, 240, 240, 0.5);
+
+
+    /**/
     width: 100%;
     overflow: hidden;
     height: 100%;
@@ -115,7 +118,8 @@ body {
 
 }
 #aboutMessage {
-    background: #FF8000;
+    background: rgb(50, 50, 50);
+    color: #f0f0f0;
     width: 40%;
     height: auto;
     padding: 20px;
@@ -130,7 +134,8 @@ body {
     padding-top: 0px;
 }
 #aboutMessage a {
-    color: black;
+    color: #FF8800;
+    text-decoration: none;
 }
 .show {
     display: inline;
