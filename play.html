@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/2.3.0/math.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/mathjs/2.3.0/math.js"></script>
         <script src="script.js"></script>
     </head>
     <body>
-        <canvas width="720" height="480" style="border: 1px solid black" id="screen"></canvas><br />
-        <input type="textarea" name="bep" rows="1" id="textinput" /><br />
+        <div id="graph-holder" style='position: relative'>
+            <canvas width="720" height="480" id="preview-graph" style="z-index: 0"></canvas>
+            <canvas width="720" height="480" id="animated-graph" style="z-index: 1"></canvas>
+            <canvas width="720" height="480" id="obstacle-graph" style="z-index: 2"></canvas>
+        </div><br />
+        <input type="textarea" name="bep" rows="1" id="textinput" style='position: relative; z-index: 100'/><br />
         <span id="error"></span>
     <div id="values" style="overflow: auto; height: 100px;">
     </div>
