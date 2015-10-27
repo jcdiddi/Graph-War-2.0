@@ -35,7 +35,7 @@ function CheckEntityCollision(x, y) {
 function CheckEntityLineCollision(x1, y1, x2, y2) {
     var dx = x2 - x1
     var dy = y2 - y1
-    var e = 0
+    var error = 0
     var de = Math.abs(dy / dx)
     var y = y1
     var yd
@@ -49,14 +49,14 @@ function CheckEntityLineCollision(x1, y1, x2, y2) {
         if(ent >= 0) {
             return ent
         }
-        e += de
-        while(e >= 0.5) {
+        error += de
+        while(error >= 0.5) {
             ent = CheckEntityCollision(x, y)
             if(ent >= 0) {
                 return ent
             }
             y += yd
-            e--
+            error--
         }
     }
     return -1
@@ -211,12 +211,12 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
     }
     for(var x = x1; x <= x2; x++) {
         if(CheckCollision(collisiondata, x, y)) {
-            return true
+            return {"x" :x, "y":y}
         }
         e += de
         while(e >= 0.5) {
             if(CheckCollision(collisiondata, x, y)) {
-                return true
+                return {"x" :x, "y":y}
             }
             y += yd
             e--
@@ -240,9 +240,19 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         var y1 = height - code.eval(obj)
         obj.x++
         var y2 = height - code.eval(obj)
-        if(CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))) {
+        var res = CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))
+        if(res != false) {
             DrawingFunction = false;
-            console.log("Collision at: " + x.toString() + " " + y2.toString())
+            console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
+            var ctx = $("#obstacle-graph")[0].getContext("2d")
+            ctx.beginPath()
+            ctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
+            ctx.fill()
+            ctx.globalAlpha = 0.1
+            ctx.globalCompositeOperation = "destination-out"
+            ctx.fill()
+            ctx.globalCompositeOperation = "none"
+            ctx.globalAlpha = 1
             return;
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
