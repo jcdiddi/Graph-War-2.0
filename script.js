@@ -15,7 +15,7 @@ function Entity(x, y, team) {
     this.team = team
     this.dead = false
 }
-Entity.prototype.Radius = 50
+Entity.prototype.Radius = 10
 function DistanceToPoints(x1, y1, x2, y2) {
     return math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 }
@@ -62,16 +62,44 @@ function CheckEntityLineCollision(x1, y1, x2, y2) {
     return -1
 }
 function DrawEntities() {
-    ctx = $("#player-graph")[0].getContext("2d")
+    var ctx = $("#player-graph")[0].getContext("2d")
     for(var i = 0; i < Entities.length; i++) {
         var ent = Entities[i]
         ctx.beginPath()
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
-        ctx.FillStyle = ent.team == 0 ? "orange" : "blue"
+        ctx.fillStyle = ent.dead ? ent.team == 0 ? "red" : "purple" : ent.team == 0 ? "orange" : "blue"
         ctx.fill()
     }
 }
-
+// Generates the lines for the background image
+// scaleX and scaleY are how many lines to put on each axis
+function GenerateBackgroundGraph(scaleX, scaleY) {
+    var ctx = $("#background-graph")[0].getContext("2d")
+    var width = ctx.canvas.width
+    var height = ctx.canvas.height
+    var lineLengthPercent = .05
+    ctx.clearRect(0, 0, width, height) // Hopefully this works
+    ctx.beginPath()
+    ctx.moveTo(width / 2, 0)
+    ctx.lineTo(width / 2, height)
+    ctx.moveTo(0, height / 2)
+    ctx.lineTo(width, height / 2)
+    var xd = width / 2 / (scaleX + 1) // Incrementally how far apart each spacing line needs to be
+    var yd = height / 2 / (scaleY + 1) // Same
+    for(var i = 1; i <= scaleX; i++) {
+        ctx.moveTo((width / 2) + (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
+        ctx.lineTo((width / 2) + (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
+        ctx.moveTo((width / 2) - (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
+        ctx.lineTo((width / 2) - (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
+    }
+    for(var i = 1; i <= scaleY; i++) {
+        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
+        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
+        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
+        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
+    }
+    ctx.stroke()
+}
 function Setup() {
     $("#graph-holder").children().css({
         "position": "absolute",
@@ -80,7 +108,30 @@ function Setup() {
         "width": "720",
         "height": "480"
     })
+    // Attach a handler to the graph so we can display peoples positions
+    $("#player-graph").mousemove(function(e) {
+        // Localize the x and y from the event so it's relative to the element and not the page
+        var me = $(this).offset()
+        var x = e.pageX - me.left
+        var y = e.pageY - me.top
+        var ent = CheckEntityCollision(x, y)
+        if(ent > -1) { // If there's an entity under the mouse
+            console.log("Entity under mouse: " + ent.toString())
+        }
+    })
+    GenerateBackgroundGraph(2, 2)
     GenerateObstacles("#obstacle-graph", 5, 50, 10)
+    // Lazily set up entities for testing stuff, probably want to
+    // Attach these to network things or something else 
+    for(var i = 0; i < 3; i++) {
+        var e = new Entity(math.random(720), math.random(480), Teams.Blue)
+        Entities.push(e)
+    }
+    for(var i = 0; i < 3; i++) {
+        var e = new Entity(math.random(720), math.random(480), Teams.Orange)
+        Entities.push(e)
+    }
+    DrawEntities()
 }
 function GenerateObstacles(canvas, minradius, maxradius, amount) {
     // This can probably be improved using some javascript magic, but I'm lazy.
@@ -200,6 +251,7 @@ function AttemptGraph(code, ctx, collisiondata, x) {
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
             entity.dead = true
+            DrawEntities()
         }
         ctx.moveTo(x - 1, y1)
         ctx.lineTo(x, y2)
