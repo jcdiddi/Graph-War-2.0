@@ -182,8 +182,9 @@ $(function() {
                 ctx.moveTo(0, canvas.height - code.eval(obj))
     	        for(var x = 1; x < canvas.width; x++) {
                     obj.x = x
-             	    ctx.lineTo(x, canvas.height - code.eval(obj))
-             	    if(code.eval(obj) >= canvas.height) {
+                    var y = code.eval(obj)
+             	    ctx.lineTo(x, canvas.height - y)
+             	    if(y >= canvas.height && y <= 0) {
                         break
                     }
                 }
