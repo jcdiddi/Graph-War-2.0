@@ -245,14 +245,12 @@ function AttemptGraph(code, ctx, collisiondata, x) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
             var ctx = $("#obstacle-graph")[0].getContext("2d")
+            ctx.save()
+            ctx.globalCompositeOperation = "destination-out"
             ctx.beginPath()
             ctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
             ctx.fill()
-            ctx.globalAlpha = 0.1
-            ctx.globalCompositeOperation = "destination-out"
-            ctx.fill()
-            ctx.globalCompositeOperation = "none"
-            ctx.globalAlpha = 1
+            ctx.restore()
             return;
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
