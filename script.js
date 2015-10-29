@@ -163,7 +163,11 @@ $(function() {
         if(e.keyCode == 13) {
             DrawingFunction = true
             var canvas = $("#obstacle-graph")[0]
+<<<<<<< HEAD
             AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
+=======
+            AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width(), canvas.height()))
+>>>>>>> master
         }
     })
     $("#textinput").on('change keyup paste', function(e) {
@@ -241,8 +245,12 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         var y1 = height - code.eval(obj)
         obj.x++
         var y2 = height - code.eval(obj)
+<<<<<<< HEAD
         var res = CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))
         if(res != false) {
+=======
+        if(CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))) {
+>>>>>>> master
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
             var ctx = $("#obstacle-graph")[0].getContext("2d")
@@ -281,4 +289,8 @@ function AttemptGraph(code, ctx, collisiondata, x) {
     } else {
         DrawingFunction = false
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master
