@@ -1,0 +1,29 @@
+<style type="text/css">
+    input[type="checkbox"]:checked + label{
+
+    }
+    input[type="checkbox"]{
+        display: none;
+    }
+    input[type="checkbox"] + label span {
+        display:inline-block;
+        width: 20px;
+        height: 20px;
+        background:url(Unchecked.svg);
+        vertical-align:middle;
+        cursor: pointer;
+    }
+    input[type="checkbox"]:checked + label span {
+        background:url(Checked.svg);
+    }
+</style>
+
+
+<input type="checkbox" id="ch1" name="cc1">
+<label for="ch1">
+    <span>
+
+    </span>
+    This is a checkbox.
+</label>
+</input>
