@@ -20,7 +20,8 @@ function DistanceToPoints(x1, y1, x2, y2) {
     return math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 }
 // Returns the index that was collided with, or -1 if there were none
-function CheckEntityCollision(x, y) {
+function CheckEntityCollision(x, y, entarray) {
+    
     for(var i = 0; i < Entities.length; i++) {
         var ent = Entities[i]
         if(DistanceToPoints(x, y, ent.x, ent.y) < ent.Radius) {
@@ -67,7 +68,12 @@ function DrawEntities() {
         var ent = Entities[i]
         ctx.beginPath()
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
-        ctx.fillStyle = ent.dead ? ent.team == 0 ? "red" : "purple" : ent.team == 0 ? "orange" : "blue"
+        var isOrange = ent.team == Teams.Orange
+        if(ent.dead) {
+            ctx.fillStyle = isOrange ? "red" : "purple"
+        } else {
+            ctx.fillStyle = isOrange ? "orange" : "blue"
+        }
         ctx.fill()
     }
 }
@@ -161,9 +167,11 @@ $(function() {
     $("#textinput").keypress(function (e) {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
-            DrawingFunction = true
-            var canvas = $("#obstacle-graph")[0]
-            AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
+            if(!DrawingFunction) {
+                DrawingFunction = true
+                var canvas = $("#obstacle-graph")[0]
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
+            }
         }
     })
     $("#textinput").on('change keyup paste', function(e) {
@@ -184,7 +192,7 @@ $(function() {
                     obj.x = x
                     var y = code.eval(obj)
              	    ctx.lineTo(x, canvas.height - y)
-             	    if(y >= canvas.height && y <= 0) {
+             	    if(canvas.height - y >= canvas.height && canvas.height - y <= 0) {
                         break
                     }
                 }
@@ -273,9 +281,9 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         ctx.lineTo(1, height - code.eval({x:1}))
         ctx.stroke()
     }
-    var t = new Object()
-    t.x = x
-    if(x <= width && code.eval(t) <= height) {
+    var t = {"x" : x}
+    var q = code.eval(t)
+    if(x <= width && q <= height && q >= 0) {
         setTimeout(function() {
             AttemptGraph(code, ctx, collisiondata, x+1)
         }, 3)
