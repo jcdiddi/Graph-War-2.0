@@ -21,9 +21,11 @@ function DistanceToPoints(x1, y1, x2, y2) {
 }
 // Returns the index that was collided with, or -1 if there were none
 function CheckEntityCollision(x, y, entarray) {
-    
-    for(var i = 0; i < Entities.length; i++) {
-        var ent = Entities[i]
+    if(typeof entarray === 'undefined') {
+        entarray = Entities
+    }
+    for(var i = 0; i < entarray.length; i++) {
+        var ent = entarray[i]
         if(DistanceToPoints(x, y, ent.x, ent.y) < ent.Radius) {
             return i
         }
@@ -192,7 +194,7 @@ $(function() {
                     obj.x = x
                     var y = code.eval(obj)
              	    ctx.lineTo(x, canvas.height - y)
-             	    if(canvas.height - y >= canvas.height && canvas.height - y <= 0) {
+             	    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
                         break
                     }
                 }
@@ -254,13 +256,13 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
-            var ctx = $("#obstacle-graph")[0].getContext("2d")
-            ctx.save()
-            ctx.globalCompositeOperation = "destination-out"
-            ctx.beginPath()
-            ctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
-            ctx.fill()
-            ctx.restore()
+            var ctx2 = $("#obstacle-graph")[0].getContext("2d")
+            ctx2.save()
+            ctx2.globalCompositeOperation = "destination-out"
+            ctx2.beginPath()
+            ctx2.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
+            ctx2.fill()
+            ctx2.restore()
             return;
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
