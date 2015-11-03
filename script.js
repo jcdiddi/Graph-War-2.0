@@ -246,14 +246,14 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
     if(first) {
-        var nctx = $("#temp-graph")[0].getContext("2d")
-        nctx.drawImage(ctx.canvas, 0, 0)
+        var tempctx = $("#temp-graph")[0].getContext("2d")
+        tempctx.drawImage(ctx.canvas, 0, 0)
         ctx.clearRect(0, 0, width, height)
         ctx.save()
         ctx.globalAlpha = 0.5
-        ctx.drawImage(nctx.canvas, 0, 0)
+        ctx.drawImage(tempctx.canvas, 0, 0)
         ctx.restore()
-        nctx.clearRect(0, 0, width, height)
+        tempctx.clearRect(0, 0, width, height)
     }
     if(x > 0) {
         ctx.beginPath()
@@ -267,13 +267,13 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
-            var ctx2 = $("#obstacle-graph")[0].getContext("2d")
-            ctx2.save()
-            ctx2.globalCompositeOperation = "destination-out"
-            ctx2.beginPath()
-            ctx2.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
-            ctx2.fill()
-            ctx2.restore()
+            var obstctx = $("#obstacle-graph")[0].getContext("2d")
+            obstctx.save()
+            obstctx.globalCompositeOperation = "destination-out"
+            obstctx.beginPath()
+            obstctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
+            obstctx.fill()
+            obstctx.restore()
             return;
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
