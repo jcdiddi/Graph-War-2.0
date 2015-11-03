@@ -239,11 +239,22 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, x) {
+function AttemptGraph(code, ctx, collisiondata, x, first) {
     if(typeof x === 'undefined') x = 0;
+    if(typeof first === 'undefined') first = true;
     $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
+    if(first) {
+        var nctx = $("#temp-graph")[0].getContext("2d")
+        nctx.drawImage(ctx, 0, 0)
+        ctx.clearRect(0, 0, width, height)
+        ctx.save()
+        ctx.globalAlpha = 0.8
+        ctx.drawImage(nctx, 0, 0)
+        ctx.restore()
+        nctx.clearRect(0, 0, width, height)
+    }
     if(x > 0) {
         ctx.beginPath()
         ctx.strokeStyle = "black"
@@ -287,7 +298,7 @@ function AttemptGraph(code, ctx, collisiondata, x) {
     var q = code.eval(t)
     if(x <= width && q <= height && q >= 0) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, x+1)
+            AttemptGraph(code, ctx, collisiondata, x+1, false)
         }, 3)
     } else {
         DrawingFunction = false
