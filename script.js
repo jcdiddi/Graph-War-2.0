@@ -247,11 +247,11 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
     var height = ctx.canvas.clientHeight
     if(first) {
         var nctx = $("#temp-graph")[0].getContext("2d")
-        nctx.drawImage(ctx, 0, 0)
+        nctx.drawImage(ctx.canvas, 0, 0)
         ctx.clearRect(0, 0, width, height)
         ctx.save()
-        ctx.globalAlpha = 0.8
-        ctx.drawImage(nctx, 0, 0)
+        ctx.globalAlpha = 0.5
+        ctx.drawImage(nctx.canvas, 0, 0)
         ctx.restore()
         nctx.clearRect(0, 0, width, height)
     }
