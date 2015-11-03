@@ -255,6 +255,7 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
         ctx.restore()
         tempctx.clearRect(0, 0, width, height)
     }
+    var hit = false
     if(x > 0) {
         ctx.beginPath()
         ctx.strokeStyle = "black"
@@ -274,10 +275,11 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
             obstctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
             obstctx.fill()
             obstctx.restore()
-            return;
+            y2 = res.y
+            hit = true
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
-        if (ent >= 0) {
+        if (ent >= 0 && !hit) {
             DrawingFunction = false
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
@@ -296,7 +298,7 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
     }
     var t = {"x" : x}
     var q = code.eval(t)
-    if(x <= width && q <= height && q >= 0) {
+    if(x <= width && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
             AttemptGraph(code, ctx, collisiondata, x+1, false)
         }, 3)
