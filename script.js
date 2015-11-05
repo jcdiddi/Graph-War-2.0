@@ -172,7 +172,7 @@ $(function() {
             if(!DrawingFunction) {
                 DrawingFunction = true
                 var canvas = $("#obstacle-graph")[0]
-                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), true, 0, canvas.width - 1)
             }
         }
     })
@@ -189,12 +189,21 @@ $(function() {
                 obj.x = 0
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
-                ctx.moveTo(0, canvas.height - code.eval(obj))
+                ctx.moveTo(canvas.width, canvas.height - code.eval(obj))
+                /*
     	        for(var x = 1; x < canvas.width; x++) {
                     obj.x = x
                     var y = code.eval(obj)
              	    ctx.lineTo(x, canvas.height - y)
              	    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
+                        break
+                    }
+                } */
+                for(var x = canvas.width - 1; x > 0; x--) {
+                    obj.x = canvas.width - x
+                    var y = code.eval(obj)
+                    ctx.lineTo(x, canvas.height - y)
+                    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
                         break
                     }
                 }
@@ -239,9 +248,11 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, x, first) {
-    if(typeof x === 'undefined') x = 0;
-    if(typeof first === 'undefined') first = true;
+function AttemptGraph(code, ctx, collisiondata, reverse, y, x, first) {
+    if(typeof x === 'undefined') x = 0
+    if(typeof y === 'undefined') y = 0
+    if(typeof reverse === 'undefined') reverse = false
+    if(typeof first === 'undefined') first = true
     $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
@@ -260,11 +271,22 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
         ctx.beginPath()
         ctx.strokeStyle = "black"
         var obj = new Object()
-        obj.x = x - 1
-        var y1 = height - code.eval(obj)
-        obj.x++
-        var y2 = height - code.eval(obj)
-        var res = CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))
+        if(reverse)
+            obj.x = width - x + 1
+        else
+            obj.x = width - x - 1
+        var y1 = height - code.eval(obj) + y
+        obj.x += reverse ? -1 : 1
+        var y2 = height - code.eval(obj) + y
+        var res = 0
+        if(reverse) {
+            var tempy = y1
+            y1 = y2
+            y2 = tempy
+            res = CheckLineCollision(collisiondata, x, math.floor(y1), x + 1, math.floor(y2))
+        } else {
+            res = CheckLineCollision(collisiondata, x - 1, math.floor(y1), x, math.floor(y2))
+        }
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
@@ -278,7 +300,11 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
             y2 = res.y
             hit = true
         }
-        var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
+        var ent = 0
+        if (reverse) 
+            ent = CheckEntityLineCollision(x, math.floor(y1), x + 1, math.floor(y2))
+        else
+            ent = CheckEntityLineCollision(x - 1, math.floor(y1), x, math.floor(y2))
         if (ent >= 0 && !hit) {
             DrawingFunction = false
             var entity = Entities[ent]
@@ -286,23 +312,32 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
             entity.dead = true
             DrawEntities()
         }
-        ctx.moveTo(x - 1, y1)
+        if(reverse)
+            ctx.moveTo(x + 1, y1)
+        else
+            ctx.moveTo(x - 1, y1)
         ctx.lineTo(x, y2)
         ctx.stroke()
+    } else if (x == width) {
+        ctx.beginPath()
+        ctx.strokeStyle = "black"
+        ctx.moveTo(width, height - code.eval({x:width - 1} + y))
+        ctx.lineTo(width - 1, height - code.eval({x:width - 2} + y))
     } else {
         ctx.beginPath()
         ctx.strokeStyle = "black"
-        ctx.moveTo(0, height - code.eval({x:0}))
-        ctx.lineTo(1, height - code.eval({x:1}))
+        ctx.moveTo(0, height - code.eval({x:0}) + y)
+        ctx.lineTo(1, height - code.eval({x:1}) + y)
         ctx.stroke()
     }
-    var t = {"x" : x}
-    var q = code.eval(t)
-    if(x <= width && q <= height && q >= 0 && !hit) {
+    var t = {"x" : width - x}
+    var q = code.eval(t) + y
+    if(x >= 0 && x <= width && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, x+1, false)
+            AttemptGraph(code, ctx, collisiondata, reverse, y, reverse ? x - 1 : x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
+        console.log({x:x, y:q})
     }
 }
