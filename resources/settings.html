@@ -1,4 +1,4 @@
-<style type="text/css">
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
     input[type="checkbox"]:checked + label{
 
     }
@@ -10,20 +10,91 @@
         width: 20px;
         height: 20px;
         background:url(Unchecked.svg);
-        vertical-align:middle;
-        cursor: pointer;
+        vertical-align: middle;
+        margin: 5px 0 5px 5px;
+        position: relative;
+        top: -2px;
     }
     input[type="checkbox"]:checked + label span {
         background:url(Checked.svg);
     }
+
+    #SettingsBox {
+        background: rgb(50, 50, 50);
+        color: #F0F0F0;
+    }
+
+    .CheckBox {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    input[type="text"] {
+        border: 2px solid #F0F0F0;
+        padding: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 5px;
+        background: rgb(50, 50, 50);
+        color: #F0F0F0;
+        margin: 5px 0 5px 0px;
+    }
+    input:focus{
+        outline: 0;
+        border: 2px solid #FF8800;
+    }
+
 </style>
 
+<script type="text/javascript">
+    function changeSecondsDisplay(){
+        var theCheckbox = document.getElementById("chTimer");
+        var secondsInput = document.getElementById("timerSeconds");
+        if(theCheckbox.checked){
+            secondsInput.style.display = "inline";
+        }else{
+            secondsInput.style.display = "none";
+        }
+    }
+    setTimeout(changeSecondsDisplay, 1);
+</script>
 
-<input type="checkbox" id="ch1" name="cc1">
-<label for="ch1">
-    <span>
+<div id="SettingsBox">
 
+    <input type="checkbox" id="ch1" name="ShotPreview">
+        <label for="ch1" class="CheckBox">
+            <span> </span>
+            Shot Preview
+        </label>
+    <br />
+    <input type="checkbox" id="ch2" name="FriendlyFire">
+    <label for="ch2" class="CheckBox">
+        <span> </span>
+        Friendly Fire
+    </label>
+    <br />
+    <input type="checkbox" id="chTimer" name="Timer" onclick="changeSecondsDisplay()">
+    <label for="chTimer" class="CheckBox">
+        <span> </span>
+        Turn Timer
+    </label>
+
+    <span id="timerSeconds">
+    <label for="num1">
+        | Seconds:
+    </label>
+
+    <input type="number" id="num1" min="10" max="600" value="60" name="Seconds">
     </span>
-    This is a checkbox.
-</label>
-</input>
+
+    <br />
+    <label for="txt1">
+        &nbsp; Player Name:
+    </label>
+    <input type="text" id="txt1" name="txt1">
+
+
+
+</div>
