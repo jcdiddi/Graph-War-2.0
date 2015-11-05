@@ -172,7 +172,7 @@ $(function() {
             if(!DrawingFunction) {
                 DrawingFunction = true
                 var canvas = $("#obstacle-graph")[0]
-                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), true, 0, canvas.width - 1)
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
             }
         }
     })
@@ -189,21 +189,12 @@ $(function() {
                 obj.x = 0
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
-                ctx.moveTo(canvas.width, canvas.height - code.eval(obj))
-                /*
+                ctx.moveTo(0, canvas.height - code.eval(obj))
     	        for(var x = 1; x < canvas.width; x++) {
                     obj.x = x
                     var y = code.eval(obj)
              	    ctx.lineTo(x, canvas.height - y)
              	    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
-                        break
-                    }
-                } */
-                for(var x = canvas.width - 1; x > 0; x--) {
-                    obj.x = canvas.width - x
-                    var y = code.eval(obj)
-                    ctx.lineTo(x, canvas.height - y)
-                    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
                         break
                     }
                 }
@@ -274,7 +265,7 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, x, first) {
         if(reverse)
             obj.x = width - x + 1
         else
-            obj.x = width - x - 1
+            obj.x = x - 1
         var y1 = height - code.eval(obj) + y
         obj.x += reverse ? -1 : 1
         var y2 = height - code.eval(obj) + y
@@ -323,6 +314,7 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, x, first) {
         ctx.strokeStyle = "black"
         ctx.moveTo(width, height - code.eval({x:width - 1} + y))
         ctx.lineTo(width - 1, height - code.eval({x:width - 2} + y))
+        ctx.stroke()
     } else {
         ctx.beginPath()
         ctx.strokeStyle = "black"
@@ -330,7 +322,7 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, x, first) {
         ctx.lineTo(1, height - code.eval({x:1}) + y)
         ctx.stroke()
     }
-    var t = {"x" : width - x}
+    var t = {"x" : reverse ? width - x : x}
     var q = code.eval(t) + y
     if(x >= 0 && x <= width && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
