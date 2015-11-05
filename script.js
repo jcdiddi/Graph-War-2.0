@@ -94,17 +94,21 @@ function GenerateBackgroundGraph(scaleX, scaleY) {
     ctx.lineTo(width, height / 2)
     var xd = width / 2 / (scaleX + 1) // Incrementally how far apart each spacing line needs to be
     var yd = height / 2 / (scaleY + 1) // Same
+    var hwidth = width / 2
+    var hheight = height / 2
+    var pwidth = height * (lineLengthPercent / 2)
+    var pheight = width * (lineLengthPercent / 2)
     for(var i = 1; i <= scaleX; i++) {
-        ctx.moveTo((width / 2) + (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
-        ctx.lineTo((width / 2) + (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
-        ctx.moveTo((width / 2) - (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
-        ctx.lineTo((width / 2) - (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
+        ctx.moveTo(hwidth + (xd * i), hheight - pheight)
+        ctx.lineTo(hwidth + (xd * i), hheight + pheight)
+        ctx.moveTo(hwidth - (xd * i), hheight - pheight)
+        ctx.lineTo(hwidth - (xd * i), hheight + pheight)
     }
     for(var i = 1; i <= scaleY; i++) {
-        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
-        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
-        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
-        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
+        ctx.moveTo(hwidth - pwidth, hheight + (yd * i))
+        ctx.lineTo(hwidth + pwidth, hheight + (yd * i))
+        ctx.moveTo(hwidth - pwidth, hheight - (yd * i))
+        ctx.lineTo(hwidth + pwidth, hheight - (yd * i))
     }
     ctx.stroke()
 }
@@ -132,12 +136,8 @@ function Setup() {
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
     for(var i = 0; i < 3; i++) {
-        var e = new Entity(math.random(720), math.random(480), Teams.Blue)
-        Entities.push(e)
-    }
-    for(var i = 0; i < 3; i++) {
-        var e = new Entity(math.random(720), math.random(480), Teams.Orange)
-        Entities.push(e)
+        Entities.push(new Entity(math.random(720), math.random(480), Teams.Blue))
+        Entities.push(new Entity(math.random(720), math.random(480), Teams.Orange))
     }
     DrawEntities()
 }
