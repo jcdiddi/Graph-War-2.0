@@ -1,5 +1,5 @@
 function launchSettings() {
-    alert("Good Job! Have a cookie.");
+    alert("This will launch an in-game settings window.");
 }
 function quit() {
     var q = confirm("Press OK to quit, press cancel to continue playing.");

@@ -50,6 +50,9 @@ td {
     padding-top: 15px;
     padding-bottom: 15px;
 }
+.menu tr td:hover {
+    background-color: #0080FF;
+}
 .y {
     font-size: 40px;
     font-family:verdana;
