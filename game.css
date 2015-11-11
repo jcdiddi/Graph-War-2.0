@@ -1,0 +1,96 @@
+body {
+    background-color: #FF8000;
+    background-image: url();
+    margin-top: 0px;
+}
+.title {
+    color: #0080FF;
+    font-size: 50px;
+    font-family: verdana, sans-serif;
+    margin-bottom: 5px;
+    margin-top: 20px;
+    text-align: center;
+}
+h2 {
+    margin-top: 0px;
+    text-align: center;
+    font-family: verdana;
+    font-size: 22px;
+}
+td {
+    padding-left: 20px;
+    padding-right: 50px;
+    cursor: pointer;
+}
+.graph {
+    float: left;
+}
+.chat {
+    float: left;
+}
+.chat_box {
+    background-color: white;
+    width: 200px;
+    height: 521px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border: 2px solid black;
+}
+.chat_heading {
+    color: black;
+    padding-top: 109px;
+    padding-bottom: 5px;
+}
+.menu tr td {
+    text-align: left;
+    font-family: verdana;
+    font-size: 18px;
+    width: 70px;
+    background-color: orange;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.menu tr td:hover {
+    background-color: #0080FF;
+}
+.y {
+    font-size: 40px;
+    font-family:verdana;
+    padding-right: 0px;
+    margin-bottom: 50px;
+}
+.equation-box{
+    padding-right: 0px;
+}
+input[type=text] {
+    width: 340px;
+    height: 40px;
+    font-size: 20px;
+    font-family: verdana;
+    padding-left: 10px;
+}
+#equation-box {
+    margin-left: 0px;
+}
+#chat-input {
+    font-size: 15px;
+    margin-top: 10px;
+    position: relative;
+}
+label {
+    font-family: verdana;
+}
+.timer-cell {
+    padding: 10px;
+}
+#timer {
+    width: 90px;
+    text-align: center;
+    padding-left: 0px;
+    font-size: 25px;
+    font-family: verdana;
+}
+#settings-button {
+    Width: 100%;
+    Height: ;
+}

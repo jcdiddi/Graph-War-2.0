@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="game.css" type="text/css" />
+        <script type="text/javascript" src="settings.js"></script>
+    </head>
+    <body>
+        <div>
+            <table class="menu">
+                <tr>
+                    <td onclick="functions()"> Functions</td>
+                    <td onclick="launchSettings()">Settings</td>
+                    <td onclick="help()">Help</td>
+                    <td onclick="quit()">Quit</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="graph">
+            <table>
+                <th>
+                    <div>
+                        <h1 class="title">
+                            Graphwar 2.0
+                        </h1>
+                        <h2>
+                            Kill Your Friends With Math
+                        </h2>
+                    </div>
+                </th>
+                <tr>
+                    <td><img src="http://graphsketch.com/images/blank.png"></img></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td class="y">y =</td>
+                    <td class="equation-box">
+                        <input id="equation" type="text" name="equation"/>
+                    </td>
+                    <td class="preview">
+                        <input id="preview-box" type="checkbox" name=""/>
+                        <label for=preview-box>Preview</label>
+                    </td>
+                    <td class="timer-cell">
+                        <input id="timer" type="text" name=""/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="chat">
+            <table>
+                <tr>
+                    <th class="chat_heading">Chat</th>
+                </tr>
+                <tr>
+                    <td class="chat_box"></td>
+                </tr>
+                <tr>
+                    <td><input id="chat-input" type="text" name="chat-input"/></td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
