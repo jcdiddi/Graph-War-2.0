@@ -300,7 +300,7 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
     var q = code.eval(t)
     if(x <= width && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, x+1, false)
+            AttemptGraph(code, ctx, collisiondata, x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
