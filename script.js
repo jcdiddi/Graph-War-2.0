@@ -94,17 +94,21 @@ function GenerateBackgroundGraph(scaleX, scaleY) {
     ctx.lineTo(width, height / 2)
     var xd = width / 2 / (scaleX + 1) // Incrementally how far apart each spacing line needs to be
     var yd = height / 2 / (scaleY + 1) // Same
+    var hwidth = width / 2
+    var hheight = height / 2
+    var pwidth = height * (lineLengthPercent / 2)
+    var pheight = width * (lineLengthPercent / 2)
     for(var i = 1; i <= scaleX; i++) {
-        ctx.moveTo((width / 2) + (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
-        ctx.lineTo((width / 2) + (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
-        ctx.moveTo((width / 2) - (xd * i), (height / 2) - (height * (lineLengthPercent / 2)))
-        ctx.lineTo((width / 2) - (xd * i), (height / 2) + (height * (lineLengthPercent / 2)))
+        ctx.moveTo(hwidth + (xd * i), hheight - pheight)
+        ctx.lineTo(hwidth + (xd * i), hheight + pheight)
+        ctx.moveTo(hwidth - (xd * i), hheight - pheight)
+        ctx.lineTo(hwidth - (xd * i), hheight + pheight)
     }
     for(var i = 1; i <= scaleY; i++) {
-        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
-        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) + (yd * i))
-        ctx.moveTo((width / 2) - (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
-        ctx.lineTo((width / 2) + (width * (lineLengthPercent / 2)), (height / 2) - (yd * i))
+        ctx.moveTo(hwidth - pwidth, hheight + (yd * i))
+        ctx.lineTo(hwidth + pwidth, hheight + (yd * i))
+        ctx.moveTo(hwidth - pwidth, hheight - (yd * i))
+        ctx.lineTo(hwidth + pwidth, hheight - (yd * i))
     }
     ctx.stroke()
 }
@@ -132,12 +136,8 @@ function Setup() {
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
     for(var i = 0; i < 3; i++) {
-        var e = new Entity(math.random(720), math.random(480), Teams.Blue)
-        Entities.push(e)
-    }
-    for(var i = 0; i < 3; i++) {
-        var e = new Entity(math.random(720), math.random(480), Teams.Orange)
-        Entities.push(e)
+        Entities.push(new Entity(math.random(720), math.random(480), Teams.Blue))
+        Entities.push(new Entity(math.random(720), math.random(480), Teams.Orange))
     }
     DrawEntities()
 }
@@ -239,11 +239,23 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, x) {
+function AttemptGraph(code, ctx, collisiondata, x, first) {
     if(typeof x === 'undefined') x = 0;
+    if(typeof first === 'undefined') first = true;
     $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
+    if(first) {
+        var tempctx = $("#temp-graph")[0].getContext("2d")
+        tempctx.drawImage(ctx.canvas, 0, 0)
+        ctx.clearRect(0, 0, width, height)
+        ctx.save()
+        ctx.globalAlpha = 0.5
+        ctx.drawImage(tempctx.canvas, 0, 0)
+        ctx.restore()
+        tempctx.clearRect(0, 0, width, height)
+    }
+    var hit = false
     if(x > 0) {
         ctx.beginPath()
         ctx.strokeStyle = "black"
@@ -256,17 +268,18 @@ function AttemptGraph(code, ctx, collisiondata, x) {
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
-            var ctx2 = $("#obstacle-graph")[0].getContext("2d")
-            ctx2.save()
-            ctx2.globalCompositeOperation = "destination-out"
-            ctx2.beginPath()
-            ctx2.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
-            ctx2.fill()
-            ctx2.restore()
-            return;
+            var obstctx = $("#obstacle-graph")[0].getContext("2d")
+            obstctx.save()
+            obstctx.globalCompositeOperation = "destination-out"
+            obstctx.beginPath()
+            obstctx.arc(res.x, res.y, 20, 0, 2 * math.PI, false)
+            obstctx.fill()
+            obstctx.restore()
+            y2 = res.y
+            hit = true
         }
         var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
-        if (ent >= 0) {
+        if (ent >= 0 && !hit) {
             DrawingFunction = false
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
@@ -285,9 +298,9 @@ function AttemptGraph(code, ctx, collisiondata, x) {
     }
     var t = {"x" : x}
     var q = code.eval(t)
-    if(x <= width && q <= height && q >= 0) {
+    if(x <= width && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, x+1)
+            AttemptGraph(code, ctx, collisiondata, x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
