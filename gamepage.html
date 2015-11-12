@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+
+<!--Header-->
+<head>
+    <!--Internal Libraries-->
+    <link rel="stylesheet" type="text/css" href="./css/gamestyle.css">
+    
+    <!--External Libraries-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.4.1/math.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link href="./js/external/css/open-sans.css" rel="stylesheet" type="text/css">
+    
+    <!--Main JS-->
+    <script type="text/javascript" src="./gamescript.js"></script>
+    
+    <title>Absolutely Magnificent Yogurt (AMY)</title>
+</head>
+
+
+<!--Body-->
+<body>
+    <table id="menu"> <!--The menu elements-->
+        <tr>
+            <td onclick="functions()"> Functions</td>
+            <td onclick="gameSettings()">Settings</td>
+            <td onclick="help()">Help</td>
+            <td onclick="quit()">Quit</td>
+        </tr>
+    </table>
+   
+    <canvas id="game"></canvas>
+    
+        
+    <div id="chat-box">
+        <div class="chats">
+        </div>
+    </div>
+    
+    <div id="toolbar">
+        <div id="tools">
+           
+            <!--User Inputs-->
+            <div class="user-inputs">
+                y =
+                <input type="text" id="input-function" name="input-function">
+                <hr>
+                <a class="math-error"></a>
+                <button type="button" class="action-fire">FIRE!</button>
+            </div>
+
+            <!--User Configs-->
+            <div class="user-configs">
+                <button type="button" class="preview">Preview</button>
+                <hr>
+                
+                <select class="weapon">
+                    <option value="standard">Standard</option>
+                    <option value="drill">Drill x4</option>
+                    <option value="tracker">Tracker x2</option>
+                    <option value="nuke">Nuke x1</option>
+                </select>
+            </div>
+            
+            <!--Graph Configs-->
+            <div class="graph-configs">
+            <table class="info">
+                <tr>
+                    <td class="heading">Turn:&nbsp;</td>
+                    <td>Amy Thomas</td>
+                </tr>
+                <tr>
+                    <td class="heading">HP:&nbsp;</td>
+                    <td>2000</td>
+                </tr>
+                <tr>
+                    <td class="heading">(x,y):&nbsp;</td>
+                    <td>(x,y)</td>
+                </tr>
+            </table>
+            </div>
+            <div class="chat">
+                <textarea rows="6" cols="50" class="chat-input"></textarea>
+                <button class="send">
+                    Send
+                </button>
+            </div>
+        </div>
+        
+    </div>
+</body>   
+    
+</html>
