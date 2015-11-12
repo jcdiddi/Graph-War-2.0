@@ -3,6 +3,8 @@ var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
 var MyPlayerID = 0; // Until we get actual networking in place, the player will always be ID=0
 
+var PlayerTurn = 0; // The player turn
+
 // We might want to put some of this stuff into an encapsulating object so it's not all in global
 // But that's not my business (Drinks apple juice as a muppet)
 var Entities = []
@@ -17,6 +19,14 @@ function Entity(x, y, team) {
     this.dead = false
 }
 Entity.prototype.Radius = 10
+Entity.prototype.GetPlayerColor = function() {
+    var isOrange = this.team == Teams.Orange
+    if(this.dead) {
+        return isOrange ? "red" : "purple"
+    } else {
+        return isOrange ? "orange" : "blue"
+    }
+}
 function DistanceToPoints(x1, y1, x2, y2) {
     return math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 }
@@ -71,12 +81,7 @@ function DrawEntities() {
         var ent = Entities[i]
         ctx.beginPath()
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
-        var isOrange = ent.team == Teams.Orange
-        if(ent.dead) {
-            ctx.fillStyle = isOrange ? "red" : "purple"
-        } else {
-            ctx.fillStyle = isOrange ? "orange" : "blue"
-        }
+        ctx.fillStyle = ent.GetPlayerColor()
         ctx.fill()
     }
 }
@@ -172,6 +177,7 @@ $(function() {
         if(e.keyCode == 13) {
             if(!DrawingFunction) {
                 DrawingFunction = true
+                $("#textinput").attr("disabled", "disabled")
                 var canvas = $("#obstacle-graph")[0]
                 AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), false, Entities[MyPlayerID].y, Entities[MyPlayerID].x)
             }
@@ -333,6 +339,7 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
         }, 3)
     } else {
         DrawingFunction = false
+        $("#textinput").removeAttr("disabled")
         console.log({x:x + xoffset, y:q})
     }
 }
