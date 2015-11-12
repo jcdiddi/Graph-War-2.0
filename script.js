@@ -175,7 +175,7 @@ $(function() {
     $("#textinput").keypress(function (e) {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
-            if(!DrawingFunction) {
+            if(!DrawingFunction && PlayerTurn == MyPlayerID) {
                 DrawingFunction = true
                 $("#textinput").attr("disabled", "disabled")
                 var canvas = $("#obstacle-graph")[0]
