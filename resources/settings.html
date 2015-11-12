@@ -22,6 +22,8 @@
     #SettingsBox {
         background: rgb(50, 50, 50);
         color: #F0F0F0;
+        padding: 20px;
+        border-radius: 15px;
     }
 
     .CheckBox {
@@ -45,7 +47,31 @@
         outline: 0;
         border: 2px solid #FF8800;
     }
-
+    #btnStart {
+        background: #ee7700;
+        color: rgb(50, 50, 50);
+        padding: 5px 15px 5px 15px;
+        border-radius: 5px;
+        border: 2px solid #F0F0F0;
+        width: 15%;
+        margin: auto;
+        font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    #btnStart:hover{
+        background: #FF8800;
+    }
 </style>
 
 <script type="text/javascript">
@@ -94,5 +120,8 @@
         &nbsp; Player Name:
     </label>
     <input type="text" id="txt1" name="txt1">
+
+    <div id="btnStart">Start
+    </div>
 
 </div>
