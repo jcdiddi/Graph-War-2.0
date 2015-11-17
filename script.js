@@ -196,8 +196,8 @@ $(function() {
             	var pointList = "" // string containing values that will be pushed to the div
                 var code = math.compile($("#textinput").val())
                 var obj = new Object()
-                var xoffset = Entities[MyPlayerID].x
-                var yoffset = Entities[MyPlayerID].y
+                var xoffset = Entities[PlayerTurn].x
+                var yoffset = Entities[PlayerTurn].y
                 obj.x = 0
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
