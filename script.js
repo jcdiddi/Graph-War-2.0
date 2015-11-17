@@ -248,12 +248,13 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
+function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, first) {
     if(typeof x === 'undefined') x = 0
     if(typeof y === 'undefined') y = 0
     if(typeof xoffset === 'undefined') xoffset = 0
     if(typeof reverse === 'undefined') reverse = false
     if(typeof first === 'undefined') first = true
+    if(typeof team === 'undefined') team = -1
     $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
@@ -278,9 +279,6 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
         var y2 = (height - code.eval(obj)) - (height - y)
         var res = 0
         if(reverse) {
-            // var tempy = y1
-            // y1 = y2
-            // y2 = tempy
             res = CheckLineCollision(collisiondata, xoffset - x, math.floor(y1), xoffset - x + 1, math.floor(y2))
         } else {
             res = CheckLineCollision(collisiondata, x - 1 + xoffset, math.floor(y1), x + xoffset, math.floor(y2))
