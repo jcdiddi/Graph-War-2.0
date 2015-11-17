@@ -2,7 +2,8 @@
 var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
 var LocalPlayers = [] // List of players that are controlled by this client
-var PlayerTurn = 0; // The player turn
+var PlayerTurn = 0 // The player turn
+var Flipped = false // Whether the canvas has already been flipped or not
 
 // We might want to put some of this stuff into an encapsulating object so it's not all in global
 // But that's not my business (Drinks apple juice as a muppet)
@@ -80,13 +81,50 @@ function CheckEntityLineCollision(x1, y1, x2, y2) {
 }
 function DrawEntities() {
     var ctx = $("#player-graph")[0].getContext("2d")
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     for(var i = 0; i < Entities.length; i++) {
         var ent = Entities[i]
+        if(i == PlayerTurn) {
+            ctx.beginPath()
+            ctx.arc(ent.x, ent.y, ent.Radius + 2, 0, 2 * math.PI, false)
+            ctx.fillStyle = "black"
+            ctx.fill()
+        }
         ctx.beginPath()
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
         ctx.fillStyle = ent.GetPlayerColor()
         ctx.fill()
     }
+    var tempcanvas = $("#temp-graph")[0]
+    var playercanvas = ctx.canvas
+    var obstaclecanvas = $("#obstacle-graph")[0]
+    if(Entities[PlayerTurn].team == Teams.Orange) {
+        FlipCanvas(playercanvas, tempcanvas)
+        if(!Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            Flipped = true
+        }
+    } else {
+        if(Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            Flipped = false
+        }
+    }
+}
+// Flips canvas along the x axis using tempcanvas
+function FlipCanvas(canvas, tempcanvas) {
+    var ctx1 = canvas.getContext("2d")
+    var tempctx = tempcanvas.getContext("2d")
+    
+    tempctx.save()
+    tempctx.clearRect(0, 0, tempcanvas.width, tempcanvas.height)
+    tempctx.translate(tempcanvas.width, 0)
+    tempctx.scale(-1, 1)
+    tempctx.drawImage(canvas, 0, 0)
+    tempctx.restore()
+    
+    ctx1.clearRect(0, 0, canvas.width, canvas.height)
+    ctx1.drawImage(tempcanvas, 0, 0)
 }
 // Generates the lines for the background image
 // scaleX and scaleY are how many lines to put on each axis
@@ -320,7 +358,7 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
             DrawingFunction = false
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
-            if(entity.team === team) {
+            if(entity.team != team) {
                 entity.dead = true
                 DrawEntities()
             }
