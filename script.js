@@ -188,7 +188,7 @@ $(function() {
     })
     $("#textinput").on('change keyup paste', function(e) {
         var canvas = $("#preview-graph")[0]
-        if(canvas.getContext && !DrawingFunction) {
+        if(canvas.getContext && !DrawingFunction && LocalPlayers.indexOf(PlayerTurn) > -1) {
    	    	var ctx = canvas.getContext("2d")
             ctx.clearRect(0, 0, canvas.width, canvas.height) // Under normal conditions this is how the graph will be cleared
             try {
