@@ -1,8 +1,7 @@
 /*global math*/
 var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
-var MyPlayerID = 0; // Until we get actual networking in place, the player will always be ID=0
-
+var LocalPlayers = [] // List of players that are controlled by this client
 var PlayerTurn = 0; // The player turn
 
 // We might want to put some of this stuff into an encapsulating object so it's not all in global
@@ -175,11 +174,11 @@ $(function() {
     $("#textinput").keypress(function (e) {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
-            if(!DrawingFunction && PlayerTurn == MyPlayerID) {
+            if(!DrawingFunction && LocalPlayers.indexOf(PlayerTurn) > -1) { // If it's not drawing and the current player is on this client
                 DrawingFunction = true
                 $("#textinput").attr("disabled", "disabled")
                 var canvas = $("#obstacle-graph")[0]
-                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), false, Entities[MyPlayerID].y, Entities[MyPlayerID].x)
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), Entities[PlayerTurn].team, false, Entities[PlayerTurn].y, Entities[PlayerTurn].x)
             }
         }
     })
@@ -306,8 +305,10 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
             DrawingFunction = false
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
-            entity.dead = true
-            DrawEntities()
+            if(entity.team === team) {
+                entity.dead = true
+                DrawEntities()
+            }
         }
         if(reverse) {
             ctx.moveTo(xoffset - x + 1, y1)
@@ -334,7 +335,7 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
     var q = (height - code.eval(t)) - (height - y)
     if(((x + xoffset <= width && !reverse) || (xoffset - x >= 0 && reverse)) && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x + 1, false)
+            AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
