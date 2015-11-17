@@ -11,11 +11,15 @@ var Teams = {
     Orange: 0,
     Blue: 1
 }
-function Entity(x, y, team) {
+function Entity(x, y, team, name) {
     this.x = x
     this.y = y
     this.team = team
     this.dead = false
+    if(typeof name === 'undefined')
+        this.name = "Bot"
+    else
+        this.name = name
 }
 Entity.prototype.Radius = 10
 Entity.prototype.GetPlayerColor = function() {
@@ -141,8 +145,8 @@ function Setup() {
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
     for(var i = 0; i < 3; i++) {
-        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Blue))
-        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Orange))
+        Entities.push(new Entity(math.floor(math.random(360)), math.floor(math.random(480)), Teams.Blue))
+        Entities.push(new Entity(math.floor(math.random(360) + 360), math.floor(math.random(480)), Teams.Orange))
     }
     DrawEntities()
 }
