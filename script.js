@@ -144,9 +144,20 @@ function Setup() {
     GenerateObstacles("#obstacle-graph", 5, 50, 10)
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
+    var colData = $("#obstacle-graph")[0].getContext("2d").getImageData(0, 0, 720, 480)
     for(var i = 0; i < 3; i++) {
-        Entities.push(new Entity(math.floor(math.random(360)), math.floor(math.random(480)), Teams.Blue))
-        Entities.push(new Entity(math.floor(math.random(360) + 360), math.floor(math.random(480)), Teams.Orange))
+        // Any way to dry this up???
+        var x, y;
+        do {
+            x = math.floor(math.random(360))
+            y = math.floor(math.random(480))
+        } while (CheckCollision(colData, x, y))
+        Entities.push(new Entity(x, y, Teams.Blue))
+        do {
+            x = math.floor(math.random(360) + 360)
+            y = math.floor(math.random(480))
+        } while (CheckCollision(colData, x, y))
+        Entities.push(new Entity(x, y, Teams.Orange))
     }
     DrawEntities()
 }
