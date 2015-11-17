@@ -278,11 +278,16 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
         obj.x++
         var y2 = (height - code.eval(obj)) - (height - y)
         var res = 0
-        if(reverse) {
-            res = CheckLineCollision(collisiondata, xoffset - x, math.floor(y1), xoffset - x + 1, math.floor(y2))
+        var x1 = 0
+        var x2 = 0
+        if (reverse) {
+            x1 = xoffset - x
+            x2 = xoffset - x + 1
         } else {
-            res = CheckLineCollision(collisiondata, x - 1 + xoffset, math.floor(y1), x + xoffset, math.floor(y2))
+            x1 = x - 1 + xoffset
+            x2 = x + xoffset
         }
+        res = CheckLineCollision(collisiondata, x1, math.floor(y1), x2, math.floor(y2))
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
@@ -296,11 +301,7 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
             y2 = res.y
             hit = true
         }
-        var ent = 0
-        if (reverse) 
-            ent = CheckEntityLineCollision(xoffset - x, math.floor(y1), xoffset - x + 1, math.floor(y2))
-        else
-            ent = CheckEntityLineCollision(x - 1 + xoffset, math.floor(y1), x + xoffset, math.floor(y2))
+        var ent = CheckEntityLineCollision(x1, math.floor(y1), x2, math.floor(y2))
         if (ent >= 0 && !hit) {
             DrawingFunction = false
             var entity = Entities[ent]
