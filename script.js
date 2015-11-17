@@ -1,6 +1,7 @@
 /*global math*/
 var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
+var MyPlayerID = 0; // Until we get actual networking in place, the player will always be ID=0
 
 // We might want to put some of this stuff into an encapsulating object so it's not all in global
 // But that's not my business (Drinks apple juice as a muppet)
@@ -136,8 +137,8 @@ function Setup() {
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
     for(var i = 0; i < 3; i++) {
-        Entities.push(new Entity(math.random(720), math.random(480), Teams.Blue))
-        Entities.push(new Entity(math.random(720), math.random(480), Teams.Orange))
+        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Blue))
+        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Orange))
     }
     DrawEntities()
 }
@@ -172,7 +173,7 @@ $(function() {
             if(!DrawingFunction) {
                 DrawingFunction = true
                 var canvas = $("#obstacle-graph")[0]
-                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height))
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), false, Entities[MyPlayerID].y, Entities[MyPlayerID].x)
             }
         }
     })
@@ -186,15 +187,17 @@ $(function() {
             	var pointList = "" // string containing values that will be pushed to the div
                 var code = math.compile($("#textinput").val())
                 var obj = new Object()
+                var xoffset = Entities[MyPlayerID].x
+                var yoffset = Entities[MyPlayerID].y
                 obj.x = 0
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
-                ctx.moveTo(0, canvas.height - code.eval(obj))
-    	        for(var x = 1; x < canvas.width; x++) {
+                ctx.moveTo(xoffset, (canvas.height - code.eval(obj)) - (canvas.height - yoffset))
+    	        for(var x = 1; x < canvas.width - xoffset; x++) {
                     obj.x = x
                     var y = code.eval(obj)
-             	    ctx.lineTo(x, canvas.height - y)
-             	    if(canvas.height - y >= canvas.height || canvas.height - y <= 0) {
+             	    ctx.lineTo(x + xoffset, (canvas.height - y) - (canvas.height - yoffset))
+             	    if((canvas.height - y) - (canvas.height - yoffset) >= canvas.height || (canvas.height - y) - (canvas.height - yoffset) <= 0) {
                         break
                     }
                 }
@@ -239,9 +242,12 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, x, first) {
-    if(typeof x === 'undefined') x = 0;
-    if(typeof first === 'undefined') first = true;
+function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
+    if(typeof x === 'undefined') x = 0
+    if(typeof y === 'undefined') y = 0
+    if(typeof xoffset === 'undefined') xoffset = 0
+    if(typeof reverse === 'undefined') reverse = false
+    if(typeof first === 'undefined') first = true
     $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
@@ -256,15 +262,25 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
         tempctx.clearRect(0, 0, width, height)
     }
     var hit = false
-    if(x > 0) {
+    if(x + xoffset > 0 || xoffset - x > 0)  {
         ctx.beginPath()
         ctx.strokeStyle = "black"
         var obj = new Object()
         obj.x = x - 1
-        var y1 = height - code.eval(obj)
+        var y1 = (height - code.eval(obj)) - (height - y)
         obj.x++
-        var y2 = height - code.eval(obj)
-        var res = CheckLineCollision(collisiondata, x-1, math.floor(y1), x, math.floor(y2))
+        var y2 = (height - code.eval(obj)) - (height - y)
+        var res = 0
+        var x1 = 0
+        var x2 = 0
+        if (reverse) {
+            x1 = xoffset - x
+            x2 = xoffset - x + 1
+        } else {
+            x1 = x - 1 + xoffset
+            x2 = x + xoffset
+        }
+        res = CheckLineCollision(collisiondata, x1, math.floor(y1), x2, math.floor(y2))
         if(res != false) {
             DrawingFunction = false;
             console.log("Collision at: " + res.x.toString() + " " + res.y.toString())
@@ -278,7 +294,7 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
             y2 = res.y
             hit = true
         }
-        var ent = CheckEntityLineCollision(x-1, math.floor(y1), x, math.floor(y2))
+        var ent = CheckEntityLineCollision(x1, math.floor(y1), x2, math.floor(y2))
         if (ent >= 0 && !hit) {
             DrawingFunction = false
             var entity = Entities[ent]
@@ -286,23 +302,35 @@ function AttemptGraph(code, ctx, collisiondata, x, first) {
             entity.dead = true
             DrawEntities()
         }
-        ctx.moveTo(x - 1, y1)
-        ctx.lineTo(x, y2)
+        if(reverse) {
+            ctx.moveTo(xoffset - x + 1, y1)
+            ctx.lineTo(xoffset - x, y2)
+        } else {
+            ctx.moveTo(x - 1 + xoffset, y1)
+            ctx.lineTo(x + xoffset, y2)
+        }
+        ctx.stroke()
+    } else if (x + xoffset == width) {
+        ctx.beginPath()
+        ctx.strokeStyle = "black"
+        ctx.moveTo(width, height - code.eval({x:width - 1}))
+        ctx.lineTo(width - 1, height - code.eval({x:width - 2}))
         ctx.stroke()
     } else {
         ctx.beginPath()
         ctx.strokeStyle = "black"
-        ctx.moveTo(0, height - code.eval({x:0}))
-        ctx.lineTo(1, height - code.eval({x:1}))
+        ctx.moveTo(0, height - code.eval({x:0}) + y)
+        ctx.lineTo(1, height - code.eval({x:1}) + y)
         ctx.stroke()
     }
     var t = {"x" : x}
-    var q = code.eval(t)
-    if(x <= width && q <= height && q >= 0 && !hit) {
+    var q = (height - code.eval(t)) - (height - y)
+    if(((x + xoffset <= width && !reverse) || (xoffset - x >= 0 && reverse)) && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, x + 1, false)
+            AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
+        console.log({x:x + xoffset, y:q})
     }
 }
