@@ -82,6 +82,27 @@ function CheckEntityLineCollision(x1, y1, x2, y2) {
 function DrawEntities() {
     var ctx = $("#player-graph")[0].getContext("2d")
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    var tempcanvas = $("#temp-graph")[0]
+    var animcanvas = $("#animated-graph")[0]
+    var obstaclecanvas = $("#obstacle-graph")[0]
+    var flipEnt = function(elem, index, arr) {
+        elem.x = ctx.canvas.width - elem.x
+    }
+    if(Entities[PlayerTurn].team == Teams.Orange && LocalPlayers.indexOf(PlayerTurn) > -1) {
+        if(!Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            FlipCanvas(animcanvas, tempcanvas)
+            Entities.forEach(flipEnt)
+            Flipped = true
+        }
+    } else {
+        if(Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            FlipCanvas(animcanvas, tempcanvas)
+            Entities.forEach(flipEnt)
+            Flipped = false
+        }
+    }
     for(var i = 0; i < Entities.length; i++) {
         var ent = Entities[i]
         if(i == PlayerTurn) {
@@ -94,21 +115,6 @@ function DrawEntities() {
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
         ctx.fillStyle = ent.GetPlayerColor()
         ctx.fill()
-    }
-    var tempcanvas = $("#temp-graph")[0]
-    var playercanvas = ctx.canvas
-    var obstaclecanvas = $("#obstacle-graph")[0]
-    if(Entities[PlayerTurn].team == Teams.Orange) {
-        FlipCanvas(playercanvas, tempcanvas)
-        if(!Flipped) {
-            FlipCanvas(obstaclecanvas, tempcanvas)
-            Flipped = true
-        }
-    } else {
-        if(Flipped) {
-            FlipCanvas(obstaclecanvas, tempcanvas)
-            Flipped = false
-        }
     }
 }
 // Flips canvas along the x axis using tempcanvas
@@ -190,12 +196,12 @@ function Setup() {
             x = math.floor(math.random(360))
             y = math.floor(math.random(480))
         } while (CheckCollision(colData, x, y))
-        Entities.push(new Entity(x, y, Teams.Blue))
+        LocalPlayers.push(Entities.push(new Entity(x, y, Teams.Blue)) - 1) // Pushes the entity to an array, then pushes that index to the local array
         do {
             x = math.floor(math.random(360) + 360)
             y = math.floor(math.random(480))
         } while (CheckCollision(colData, x, y))
-        Entities.push(new Entity(x, y, Teams.Orange))
+        LocalPlayers.push(Entities.push(new Entity(x, y, Teams.Orange)) - 1) // ^
     }
     DrawEntities()
 }
@@ -268,6 +274,13 @@ $(function() {
         }
     })
 })
+function NextTurn() {
+    do {
+        PlayerTurn++
+        PlayerTurn %= Entities.length
+    } while (Entities[PlayerTurn].dead)
+    DrawEntities()
+}
 // Returns false or true if there is a collision on the line in the collisiondata context
 // collisiondata being an imagedata created by createImageData()
 function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
@@ -307,7 +320,6 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
     if(typeof reverse === 'undefined') reverse = false
     if(typeof first === 'undefined') first = true
     if(typeof team === 'undefined') team = -1
-    $("#textinput").html("")
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
     if(first) {
@@ -392,7 +404,11 @@ function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, fi
         }, 3)
     } else {
         DrawingFunction = false
-        $("#textinput").removeAttr("disabled")
+        var textfield = $("#textinput")
+        textfield.removeAttr("disabled")
+        textfield.val('')
+        textfield.trigger("change")
+        NextTurn()
         console.log({x:x + xoffset, y:q})
     }
 }
