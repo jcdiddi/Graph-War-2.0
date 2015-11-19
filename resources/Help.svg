@@ -4,12 +4,14 @@
 	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#F26101;}
-	.st1{font-family:'Monaco';}
-	.st2{font-size:548.6775px;}
 </style>
-<path class="st0" d="M410,500H90c-49.5,0-90-40.5-90-90V90C0,40.5,40.5,0,90,0H410c49.5,0,90,40.5,90,90V410
-	C500,459.5,459.5,500,410,500z"/>
-<rect x="469" y="250" class="st0" width="13" height="0"/>
+<g>
+	<path class="st0" d="M410,500H90c-49.5,0-90-40.5-90-90V90C0,40.5,40.5,0,90,0H410c49.5,0,90,40.5,90,90V410
+		C500,459.5,459.5,500,410,500z"/>
+</g>
+<g>
+	<rect x="469" y="250" class="st0" width="13" height="0"/>
+</g>
 <g>
 	
 		<image style="overflow:visible;" width="350" height="720" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAALQCAYAAADYeRgvAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
@@ -259,11 +261,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADy7/8L
 MAA+23cmUGbujgAAAABJRU5ErkJggg==" transform="matrix(1 0 0 1 89 -22)">
 	</image>
 	<g>
-		<text transform="matrix(1.0415 0 0 1 89.1375 456.6151)" class="st1 st2">?</text>
+		<g>
+			<path d="M201,338.2v-9.4c0-14.8,1.3-27.2,3.9-37.1c2.6-9.9,7.6-20.2,15-30.8c7.4-10.6,18.4-23.4,33.1-38.4l17.3-17.7
+				c3.4-3.4,8.2-8.9,14.5-16.6l18.5-22.2c15.7-18.6,23.5-34.6,23.5-48.2c0-12.5-5.6-23.6-16.8-33.2S280.8,70,255.6,70
+				c-16.2,0-32.7,2.1-49.6,6.3c-16.9,4.2-36.6,12.4-59.1,24.5V52.6c34.4-16.1,70.4-24.1,108-24.1c41.7,0,73.4,8.2,95.3,24.5
+				C372,69.4,383,90.6,383,116.6c0,25.7-14.1,52.4-42.4,80.1L322.1,215l-21.8,21.7l-19.8,19.6c-7.3,7.9-13.7,16.9-19.3,27.1
+				s-8.4,24.4-8.4,42.6v12.3H201z M229.5,469.2c-10.8,0-20.1-3.8-28-11.4c-7.9-7.6-11.9-16.7-11.9-27.2c0-10.5,4-19.6,11.9-27.1
+				c7.9-7.5,17.3-11.3,28-11.3c11,0,20.4,3.7,28.3,11.1c7.9,7.4,11.9,16.5,11.9,27.2c0,10.7-4,19.8-12,27.3
+				C249.7,465.5,240.3,469.2,229.5,469.2z"/>
+		</g>
 	</g>
 </g>
-<path class="st0" d="M907.9,500H588c-49.5,0-90-40.5-90-90V90c0-49.5,40.5-90,90-90h319.9c49.5,0,90,40.5,90,90V410
-	C997.9,459.5,957.4,500,907.9,500z"/>
+<g>
+	<path class="st0" d="M907.9,500H588c-49.5,0-90-40.5-90-90V90c0-49.5,40.5-90,90-90h319.9c49.5,0,90,40.5,90,90V410
+		C997.9,459.5,957.4,500,907.9,500z"/>
+</g>
 <g>
 	
 		<image style="overflow:visible;" width="350" height="720" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAALQCAYAAADYeRgvAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
@@ -474,7 +486,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAICu8/8FGAB0morHe+36/AAAAABJRU5ErkJggg==" transform="matrix(1 0 0 1 578 -14)">
 	</image>
 	<g>
-		<text transform="matrix(1.0415 0 0 1 576.4685 464.8051)" class="st1 st2">X</text>
+		<g>
+			<path d="M648.6,464.8H590l126.7-216.2L602.1,49h64l83.1,144.1L833.6,49h58.9L778.3,243.6l127.5,221.2h-65l-95.1-165.6
+				L648.6,464.8z"/>
+		</g>
 	</g>
 </g>
 </svg>
