@@ -1,7 +1,9 @@
 /*global math*/
 var DrawingFunction = false;
 var ObstacleArguments = new Object() // OOP FTW
-var MyPlayerID = 0; // Until we get actual networking in place, the player will always be ID=0
+var LocalPlayers = [] // List of players that are controlled by this client
+var PlayerTurn = 0 // The player turn
+var Flipped = false // Whether the canvas has already been flipped or not
 
 // We might want to put some of this stuff into an encapsulating object so it's not all in global
 // But that's not my business (Drinks apple juice as a muppet)
@@ -10,13 +12,25 @@ var Teams = {
     Orange: 0,
     Blue: 1
 }
-function Entity(x, y, team) {
+function Entity(x, y, team, name) {
     this.x = x
     this.y = y
     this.team = team
     this.dead = false
+    if(typeof name === 'undefined')
+        this.name = "Bot"
+    else
+        this.name = name
 }
 Entity.prototype.Radius = 10
+Entity.prototype.GetPlayerColor = function() {
+    var isOrange = this.team == Teams.Orange
+    if(this.dead) {
+        return isOrange ? "red" : "purple"
+    } else {
+        return isOrange ? "orange" : "blue"
+    }
+}
 function DistanceToPoints(x1, y1, x2, y2) {
     return math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 }
@@ -67,18 +81,56 @@ function CheckEntityLineCollision(x1, y1, x2, y2) {
 }
 function DrawEntities() {
     var ctx = $("#player-graph")[0].getContext("2d")
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    var tempcanvas = $("#temp-graph")[0]
+    var animcanvas = $("#animated-graph")[0]
+    var obstaclecanvas = $("#obstacle-graph")[0]
+    var flipEnt = function(elem, index, arr) {
+        elem.x = ctx.canvas.width - elem.x
+    }
+    if(Entities[PlayerTurn].team == Teams.Orange && LocalPlayers.indexOf(PlayerTurn) > -1) {
+        if(!Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            FlipCanvas(animcanvas, tempcanvas)
+            Entities.forEach(flipEnt)
+            Flipped = true
+        }
+    } else {
+        if(Flipped) {
+            FlipCanvas(obstaclecanvas, tempcanvas)
+            FlipCanvas(animcanvas, tempcanvas)
+            Entities.forEach(flipEnt)
+            Flipped = false
+        }
+    }
     for(var i = 0; i < Entities.length; i++) {
         var ent = Entities[i]
+        if(i == PlayerTurn) {
+            ctx.beginPath()
+            ctx.arc(ent.x, ent.y, ent.Radius + 2, 0, 2 * math.PI, false)
+            ctx.fillStyle = "black"
+            ctx.fill()
+        }
         ctx.beginPath()
         ctx.arc(ent.x, ent.y, ent.Radius, 0, 2 * math.PI, false)
-        var isOrange = ent.team == Teams.Orange
-        if(ent.dead) {
-            ctx.fillStyle = isOrange ? "red" : "purple"
-        } else {
-            ctx.fillStyle = isOrange ? "orange" : "blue"
-        }
+        ctx.fillStyle = ent.GetPlayerColor()
         ctx.fill()
     }
+}
+// Flips canvas along the x axis using tempcanvas
+function FlipCanvas(canvas, tempcanvas) {
+    var ctx1 = canvas.getContext("2d")
+    var tempctx = tempcanvas.getContext("2d")
+    
+    tempctx.save()
+    tempctx.clearRect(0, 0, tempcanvas.width, tempcanvas.height)
+    tempctx.translate(tempcanvas.width, 0)
+    tempctx.scale(-1, 1)
+    tempctx.drawImage(canvas, 0, 0)
+    tempctx.restore()
+    
+    ctx1.clearRect(0, 0, canvas.width, canvas.height)
+    ctx1.drawImage(tempcanvas, 0, 0)
 }
 // Generates the lines for the background image
 // scaleX and scaleY are how many lines to put on each axis
@@ -136,9 +188,20 @@ function Setup() {
     GenerateObstacles("#obstacle-graph", 5, 50, 10)
     // Lazily set up entities for testing stuff, probably want to
     // Attach these to network things or something else 
+    var colData = $("#obstacle-graph")[0].getContext("2d").getImageData(0, 0, 720, 480)
     for(var i = 0; i < 3; i++) {
-        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Blue))
-        Entities.push(new Entity(math.floor(math.random(720)), math.floor(math.random(480)), Teams.Orange))
+        // Any way to dry this up???
+        var x, y;
+        do {
+            x = math.floor(math.random(360))
+            y = math.floor(math.random(480))
+        } while (CheckCollision(colData, x, y))
+        LocalPlayers.push(Entities.push(new Entity(x, y, Teams.Blue)) - 1) // Pushes the entity to an array, then pushes that index to the local array
+        do {
+            x = math.floor(math.random(360) + 360)
+            y = math.floor(math.random(480))
+        } while (CheckCollision(colData, x, y))
+        LocalPlayers.push(Entities.push(new Entity(x, y, Teams.Orange)) - 1) // ^
     }
     DrawEntities()
 }
@@ -170,16 +233,17 @@ $(function() {
     $("#textinput").keypress(function (e) {
         console.log("Oi, a thing happened!")
         if(e.keyCode == 13) {
-            if(!DrawingFunction) {
+            if(!DrawingFunction && LocalPlayers.indexOf(PlayerTurn) > -1) { // If it's not drawing and the current player is on this client
                 DrawingFunction = true
+                $("#textinput").attr("disabled", "disabled")
                 var canvas = $("#obstacle-graph")[0]
-                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), false, Entities[MyPlayerID].y, Entities[MyPlayerID].x)
+                AttemptGraph(math.compile($("#textinput").val()), $("#animated-graph")[0].getContext("2d"), canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height), Entities[PlayerTurn].team, false, Entities[PlayerTurn].y, Entities[PlayerTurn].x)
             }
         }
     })
     $("#textinput").on('change keyup paste', function(e) {
         var canvas = $("#preview-graph")[0]
-        if(canvas.getContext && !DrawingFunction) {
+        if(canvas.getContext && !DrawingFunction && LocalPlayers.indexOf(PlayerTurn) > -1) {
    	    	var ctx = canvas.getContext("2d")
             ctx.clearRect(0, 0, canvas.width, canvas.height) // Under normal conditions this is how the graph will be cleared
             try {
@@ -187,8 +251,8 @@ $(function() {
             	var pointList = "" // string containing values that will be pushed to the div
                 var code = math.compile($("#textinput").val())
                 var obj = new Object()
-                var xoffset = Entities[MyPlayerID].x
-                var yoffset = Entities[MyPlayerID].y
+                var xoffset = Entities[PlayerTurn].x
+                var yoffset = Entities[PlayerTurn].y
                 obj.x = 0
                 ctx.beginPath()
                 ctx.strokeStyle = "lightgray"
@@ -210,6 +274,13 @@ $(function() {
         }
     })
 })
+function NextTurn() {
+    do {
+        PlayerTurn++
+        PlayerTurn %= Entities.length
+    } while (Entities[PlayerTurn].dead)
+    DrawEntities()
+}
 // Returns false or true if there is a collision on the line in the collisiondata context
 // collisiondata being an imagedata created by createImageData()
 function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
@@ -242,13 +313,13 @@ function CheckLineCollision(collisiondata, x1, y1, x2, y2) {
 function CheckCollision(collisiondata, x, y) {
     return collisiondata.data[((y * collisiondata.width) + x) * 4 + 3] > 128 
 }
-function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
+function AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x, first) {
     if(typeof x === 'undefined') x = 0
     if(typeof y === 'undefined') y = 0
     if(typeof xoffset === 'undefined') xoffset = 0
     if(typeof reverse === 'undefined') reverse = false
     if(typeof first === 'undefined') first = true
-    $("#textinput").html("")
+    if(typeof team === 'undefined') team = -1
     var width = ctx.canvas.clientWidth
     var height = ctx.canvas.clientHeight
     if(first) {
@@ -299,8 +370,10 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
             DrawingFunction = false
             var entity = Entities[ent]
             console.log("Entity Collision at:" + entity.x.toString() + " " + entity.y.toString())
-            entity.dead = true
-            DrawEntities()
+            if(entity.team != team) {
+                entity.dead = true
+                DrawEntities()
+            }
         }
         if(reverse) {
             ctx.moveTo(xoffset - x + 1, y1)
@@ -327,10 +400,15 @@ function AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x, first) {
     var q = (height - code.eval(t)) - (height - y)
     if(((x + xoffset <= width && !reverse) || (xoffset - x >= 0 && reverse)) && q <= height && q >= 0 && !hit) {
         setTimeout(function() {
-            AttemptGraph(code, ctx, collisiondata, reverse, y, xoffset, x + 1, false)
+            AttemptGraph(code, ctx, collisiondata, team, reverse, y, xoffset, x + 1, false)
         }, 3)
     } else {
         DrawingFunction = false
+        var textfield = $("#textinput")
+        textfield.removeAttr("disabled")
+        textfield.val('')
+        textfield.trigger("change")
+        NextTurn()
         console.log({x:x + xoffset, y:q})
     }
 }
