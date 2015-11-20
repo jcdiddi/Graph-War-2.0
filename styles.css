@@ -146,8 +146,8 @@ body {
 .stopScrolling {
     height: 100%;
     overflow: hidden;
-    -webkit-filter: blur(8px);
-    filter: blur(8px);
+    -webkit-filter: blur(8px) grayscale(100%);
+    filter: blur(8px) grayscale(100%);
 }
 
 body{
