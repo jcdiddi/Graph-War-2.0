@@ -180,8 +180,17 @@ function Setup() {
         var x = e.pageX - me.left
         var y = e.pageY - me.top
         var ent = CheckEntityCollision(x, y)
+        var coord = $("#mousecoords")
         if(ent > -1) { // If there's an entity under the mouse
             console.log("Entity under mouse: " + ent.toString())
+            var entity = Entities[ent]
+            coord.offset({left: entity.x + me.left, top: entity.y + me.top - 30})
+            coord.text(entity.name + " x: " + (entity.x - Entities[PlayerTurn].x) + " y: " + -(entity.y - Entities[PlayerTurn].y))
+            coord.css("color", entity.GetPlayerColor())
+        } else {
+            coord.offset({left: e.pageX, top: e.pageY - 30})
+            coord.text("x: " + (x - Entities[PlayerTurn].x) + " y: " + -(y - Entities[PlayerTurn].y))
+            coord.css("color", "black")
         }
     })
     GenerateBackgroundGraph(2, 2)
