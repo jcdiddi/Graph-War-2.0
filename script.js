@@ -185,11 +185,11 @@ function Setup() {
             console.log("Entity under mouse: " + ent.toString())
             var entity = Entities[ent]
             coord.offset({left: entity.x + me.left, top: entity.y + me.top - 30})
-            coord.text(entity.name + " x: " + (entity.x - Entities[PlayerTurn].x) + " y: " + -(entity.y - Entities[PlayerTurn].y))
+            coord.text(entity.name + ": (" + (entity.x - Entities[PlayerTurn].x) + ", " + -(entity.y - Entities[PlayerTurn].y)+ ")")
             coord.css("color", entity.GetPlayerColor())
         } else {
             coord.offset({left: e.pageX, top: e.pageY - 30})
-            coord.text("x: " + (x - Entities[PlayerTurn].x) + " y: " + -(y - Entities[PlayerTurn].y))
+            coord.text("(" + (x - Entities[PlayerTurn].x) + ", " + -(y - Entities[PlayerTurn].y) + ")")
             coord.css("color", "black")
         }
     })

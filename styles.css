@@ -143,8 +143,16 @@ body {
     top: 10px;
     cursor: pointer;
 }
+
+#body{
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    -ms-transition: all .5s ease-in-out;
+    -o-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+}
 .stopScrolling {
-    height: 100%;
+    transform: scaleX(0.9) scaleY(0.9);
     overflow: hidden;
     -webkit-filter: blur(8px) grayscale(100%);
     filter: blur(8px) grayscale(100%);
