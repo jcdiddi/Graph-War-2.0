@@ -110,8 +110,10 @@ body {
     height: 100%;
     text-align: center;
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 1;
+    margin: 0;
+    top: 0;
 }
 #aboutMessage {
     background: #323232;
@@ -122,12 +124,13 @@ body {
     border-radius: 3px;
     box-shadow: 0 3px 0 0 #808080;
     text-align: center;
-    margin: auto;
+    margin: 0 auto;
     overflow: hidden;
     z-index: 1;
     position: relative;
     top: 200px;
     padding-top: 0px;
+
 }
 #aboutMessage a {
     color: #F26101;
